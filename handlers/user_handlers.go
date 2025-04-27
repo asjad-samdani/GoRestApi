@@ -38,23 +38,50 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// func CreateUser(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json")
+// 	var user model.User
+// 	err := json.NewDecoder(r.Body).Decode(&user)
+// 	if err != nil {
+// 		http.Error(w, "Invalid request ", http.StatusBadRequest)
+// 		return
+// 	}
+// 	result := DB.Create(&user)
+// 	if result.Error != nil {
+// 		http.Error(w, "Failed to create user", http.StatusInternalServerError)
+// 		return
+// 	}
+// 	w.WriteHeader(http.StatusCreated)
+// 	json.NewEncoder(w).Encode(user)
+
+// }
+
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+
+	// Check if DB is nil before proceeding
+	if DB == nil {
+		http.Error(w, "Database connection is not initialized", http.StatusInternalServerError)
+		return
+	}
+
 	var user model.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		http.Error(w, "Invalid request ", http.StatusBadRequest)
+		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
 	}
+
 	result := DB.Create(&user)
 	if result.Error != nil {
 		http.Error(w, "Failed to create user", http.StatusInternalServerError)
 		return
 	}
+
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(user)
-
 }
+
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)

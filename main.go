@@ -11,7 +11,9 @@ import (
 )
 
 // Routing
-func initializeRouter() {
+
+func main() {
+	database.ConnectDatabase()
 	r := mux.NewRouter()
 	r.HandleFunc("/user", handlers.GetUsers).Methods("GET")
 	r.HandleFunc("/user/{id}", handlers.GetUser).Methods("GET")
@@ -24,11 +26,5 @@ func initializeRouter() {
 		log.Fatal("Server failed to start:", err)
 	}
 	fmt.Println("Server is running on port 8000...")
-
-}
-
-func main() {
-	database.ConnectDatabase()
-	initializeRouter()
 
 }
